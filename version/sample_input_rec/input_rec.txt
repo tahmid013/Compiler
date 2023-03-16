@@ -1,0 +1,19 @@
+
+int rec(int n)
+{
+    if(n > 1)
+        return 2 + rec(n - 1);
+    else
+        return 2;
+}
+int main(){
+    int a,b, r;
+    a=5;
+    b=2;
+
+    r = rec(a);
+    println(r);
+    return 0;
+}
+
+

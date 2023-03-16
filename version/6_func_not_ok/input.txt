@@ -1,0 +1,12 @@
+int f(int a){
+    return 2*a;
+}
+
+int main(){
+    int a,b;
+    a=1;
+    a=f(a);
+    println(a);
+    
+}
+

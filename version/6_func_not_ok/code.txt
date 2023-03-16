@@ -1,0 +1,100 @@
+.MODEL SMALL
+.STACK 100H
+.DATA
+	t0 dw ?
+	a1_1 dw ?
+	a1_2_1 dw ?
+	b1_2_1 dw ?
+	t1 dw ?
+	address dw ?
+.CODE
+PRINT_ID PROC
+
+	;SAVE IN STACK
+	PUSH AX
+	PUSH BX
+	PUSH CX
+	PUSH DX
+
+	;CHECK IF NEGATIVE
+	OR AX, AX
+	JGE PRINT_NUMBER
+
+	;PRINT MINUS SIGN
+	PUSH AX
+	MOV AH, 2
+	MOV DL, '-'
+	INT 21H
+	POP AX
+
+	NEG AX
+
+	PRINT_NUMBER:
+	XOR CX, CX
+	MOV BX, 10D
+
+	REPEAT_CALC:
+
+		;AX:DX- QUOTIENT:REMAINDER
+		XOR DX, DX
+		DIV BX  ;DIVIDE BY 10
+		PUSH DX ;PUSH THE REMAINDER IN STACK
+
+		INC CX
+
+		OR AX, AX
+		JNZ REPEAT_CALC
+
+	MOV AH, 2
+
+	PRINT_LOOP:
+		POP DX
+		ADD DL, 30H
+		INT 21H
+		LOOP PRINT_LOOP
+
+	;NEWLINE
+	MOV AH, 2
+	MOV DL, 0AH
+	INT 21H
+	MOV DL, 0DH
+	INT 21H
+
+	POP AX
+	POP BX
+	POP CX
+	POP DX
+
+	RET
+PRINT_ID ENDP
+
+f PROC
+
+pop a1_1
+	
+	mov ax, 2
+	mov bx, a1_1
+	mul bx
+	mov t0, ax
+	push t0
+f endp
+MAIN PROC
+
+	;INITIALIZE DATA SEGMENT
+	MOV AX, @DATA
+	MOV DS, AX
+
+	mov ax, 1
+	mov a1_2_1, ax
+	
+	push a1_2_1
+	call f
+	pop t1
+	
+	mov ax, t1
+	mov a1_2_1, ax
+
+	MOV AX, a1_2_1
+	CALL PRINT_ID
+	endp main
+end main

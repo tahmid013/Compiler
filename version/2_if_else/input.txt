@@ -1,0 +1,16 @@
+
+int main(){
+	int a,b,c,i; 
+	
+	b=4;
+	c=6;
+	if(b<=c)
+	{	
+		a = 2*b + c; //14
+	}
+	else
+	{	
+		a = 2*b - c; //2 ans
+	}
+	println(a);
+}

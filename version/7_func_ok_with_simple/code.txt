@@ -1,0 +1,77 @@
+.MODEL SMALL
+.STACK 100H
+.DATA
+	t0 dw ?
+	a1_1 dw ?
+	a1_2_1 dw ?
+	b1_2_1 dw ?
+	t1 dw ?
+	address dw ?
+.CODE
+PRINT_ID PROC
+	push bx                        
+	push cx                        
+	push dx                        
+	cmp ax, 0     
+	jge start        ;jump if positive number 
+	push ax                        
+	mov ah, 2                      
+	mov dl, "-"    ;print '-' otherwise        
+	int 21h                        
+	pop ax                         
+	neg ax                        
+	start:                        
+	xor cx, cx    ;clearing register                
+	mov bx, 10    ;initalize bx by 10                 
+	output_:                       
+		xor dx, dx  ;clear dx                
+		div bx      ;ax = ax/bx (10)               
+		push dx     ;pushing remainder into stack           
+		inc cx      ;to count number of digit              
+		or ax, ax                   
+	jne output_    ;loop until zf not 1                
+	mov ah, 2                     
+	display:                      
+		pop dx       ;printing remainder from reverse order  
+		or dl, 30h                  
+		int 21h                     
+	loop display                  
+	mov dl, ' '
+	mov ah, 2
+	int 21h              
+	pop dx                        
+	pop cx                        
+	pop bx                        
+	ret
+PRINT_ID ENDP
+
+f PROC
+
+	pop address
+pop a1_1
+	mov ax, 2
+	mov bx, a1_1
+	mul bx
+	mov t0, ax
+	push t0
+	push address
+	ret
+f endp
+MAIN PROC
+
+	;INITIALIZE DATA SEGMENT
+	MOV AX, @DATA
+	MOV DS, AX
+
+	mov ax, 1
+	mov a1_2_1, ax
+	push a1_2_1
+	call f
+	pop t1
+	mov ax, t1
+	mov a1_2_1, ax
+
+	MOV AX, a1_2_1
+	CALL PRINT_ID
+	endp main
+end main
